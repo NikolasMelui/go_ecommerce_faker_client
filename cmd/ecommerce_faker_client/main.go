@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,14 +8,14 @@ import (
 )
 
 // StrapiRes ...
-type StrapiRes struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
-	Data    json.RawMessage `json:"data"`
-}
+// type StrapiRes struct {
+// 	Code    int             `json:"code"`
+// 	Message string          `json:"message"`
+// 	Data    json.RawMessage `json:"data"`
+// }
 
 func main() {
-	res, err := http.Get("http://localhost:1337/")
+	res, err := http.Get("http://localhost:1337/products")
 
 	if err != nil {
 		log.Fatal(err)
@@ -25,12 +24,21 @@ func main() {
 	defer res.Body.Close()
 
 	if res.StatusCode == http.StatusOK {
+
 		buffer, err := ioutil.ReadAll(res.Body)
+
 		if err != nil {
 			log.Fatal(err)
 		}
-		result := string(buffer)
-		fmt.Print(result)
+
+		// var result json.RawMessage
+		// var result string
+
+		// if err = json.NewDecoder(res.Body).Decode(&result); err != nil {
+		// 	log.Fatal(err)
+		// }
+
+		fmt.Print(string(buffer))
 	}
 
 	// var result StrapiRes
