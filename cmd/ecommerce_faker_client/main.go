@@ -57,10 +57,25 @@ type errorResponse struct {
 }
 
 func main() {
-	res, err := http.Get("http://localhost:1337/products")
+
+	products, err := getProducts()
 
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	for _, product := range *products {
+		fmt.Println("Product ID - ", product.ID)
+		fmt.Println("Product Name - ", product.Name)
+	}
+}
+
+func getProducts() (*[]Product, error) {
+
+	res, err := http.Get("http://localhost:1337/products")
+
+	if err != nil {
+		return nil, err
 	}
 
 	defer res.Body.Close()
@@ -68,11 +83,9 @@ func main() {
 	if res.StatusCode != http.StatusOK {
 		var errRes errorResponse
 		if err := json.NewDecoder(res.Body).Decode(&errRes); err == nil {
-			nilError := errors.New(errRes.Message)
-			log.Fatal(nilError)
+			return nil, errors.New(errRes.Message)
 		}
-		newError := fmt.Errorf("Unknown error, status code: %d", res.StatusCode)
-		log.Fatal(newError)
+		return nil, fmt.Errorf("Unknown error, status code: %d", res.StatusCode)
 	}
 
 	var products []Product
@@ -80,9 +93,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for _, product := range products {
-		fmt.Println("Product ID - ", product.ID)
-		fmt.Println("Product Name - ", product.Name)
-	}
+	return &products, nil
 
 }
