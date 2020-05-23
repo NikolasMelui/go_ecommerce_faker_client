@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"io"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 // StrapiRes ...
@@ -24,7 +24,14 @@ func main() {
 
 	defer res.Body.Close()
 
-	io.Copy(os.Stdout, res.Body)
+	if res.StatusCode == http.StatusOK {
+		buffer, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			log.Fatal(err)
+		}
+		result := string(buffer)
+		fmt.Print(result)
+	}
 
 	// var result StrapiRes
 
