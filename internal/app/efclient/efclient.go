@@ -26,7 +26,7 @@ type Product struct {
 	Price             int               `json:"price"`
 	CreatedAt         string            `json:"created_at"`
 	UpdatedAt         string            `json:"updated_at"`
-	ProductCategory   int               `json:"product_category"`
+	ProductCategory   json.RawMessage   `json:"product_category"`
 	ProductProperties []ProductProperty `json:"property"`
 	ProductImages     []ProductImage    `json:"images"`
 	ProductOrders     []ProductOrder    `json:"orders"`
@@ -59,6 +59,21 @@ type ProductCart struct {
 // ProductLable ...
 type ProductLable struct {
 	ID int `json:"id"`
+}
+
+// ProductCategories ...
+type ProductCategories = []ProductCategory
+
+// ProductCategory ...
+type ProductCategory struct {
+	ID                        int               `json:"id"`
+	Name                      string            `json:"name"`
+	Description               string            `json:"description"`
+	ParentProductCategory     json.RawMessage   `json:"parent_product_category"`
+	CreatedAt                 string            `json:"created_at"`
+	UpdatedAt                 string            `json:"updated_at"`
+	Products                  []Product         `json:"products"`
+	ChildrenProductCategories []ProductCategory `json:"children_product_categories"`
 }
 
 type errorResponse struct {
@@ -114,6 +129,24 @@ func (c *Client) GetProducts() (*Products, error) {
 	}
 
 	var res Products
+
+	if err := c.sendRequest(req, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+
+}
+
+// GetProductCategories ...
+func (c *Client) GetProductCategories() (*ProductCategories, error) {
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/product-categories", c.BaseURL), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var res ProductCategories
 
 	if err := c.sendRequest(req, &res); err != nil {
 		return nil, err
