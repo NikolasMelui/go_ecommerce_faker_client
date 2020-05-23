@@ -28,13 +28,25 @@ func main() {
 
 	c := efclient.NewClient(config)
 
+	// Get products
 	products, err := c.GetProducts()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	for _, product := range *products {
 		fmt.Println("Product ID - ", product.ID)
 		fmt.Println("Product Name - ", product.Name)
+		fmt.Println("ProductCategory ID - ", string(product.ProductCategory))
+	}
+
+	// Get product-categories
+	productCategories, err := c.GetProductCategories()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, productCategory := range *productCategories {
+		fmt.Println("ProductCategory ID - ", productCategory.ID)
+		fmt.Println("ProductCategory Name - ", productCategory.Name)
 	}
 }
