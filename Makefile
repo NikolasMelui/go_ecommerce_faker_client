@@ -1,9 +1,9 @@
 .PHONY: build run
 
 build:
-	go build -v ./cmd/ecommerce_faker_client
+	go build -v ./cmd/efclient
 
 run:
-	go build -v ./cmd/ecommerce_faker_client; ./ecommerce_faker_client
+	go build -v ./cmd/efclient; ./efclient
 
 .DEFAULT_GOAL := build
