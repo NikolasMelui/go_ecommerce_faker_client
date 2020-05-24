@@ -71,14 +71,16 @@ func (c *Client) GetProducts() (*Products, error) {
 }
 
 // CreateProduct ...
-func (c *Client) CreateProduct() (*Product, error) {
+func (c *Client) CreateProduct(name *string, description *string, price *int, productCategory *int) (*Product, error) {
 
-	requestBody, err := json.Marshal(map[string]string{
-		"name":             "FirstPostedProduct",
-		"description":      "Description of the first posted product",
-		"price":            "1000",
-		"product_category": "1",
-	})
+	requestData := map[string]interface{}{
+		"name":             &name,
+		"description":      &description,
+		"price":            &price,
+		"product_category": &productCategory,
+	}
+
+	requestBody, err := json.Marshal(requestData)
 	if err != nil {
 		return nil, err
 	}
