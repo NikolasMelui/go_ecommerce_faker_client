@@ -35,7 +35,6 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		chProducts <- products
 	}()
 	products := <-chProducts
@@ -47,7 +46,6 @@ func main() {
 
 	// Get product-categories
 	chProductCategories := make(chan *efclient.ProductCategories)
-
 	go func() {
 		productCategories, err := c.GetProductCategories()
 		if err != nil {
@@ -55,11 +53,24 @@ func main() {
 		}
 		chProductCategories <- productCategories
 	}()
-
 	productCategories := <-chProductCategories
-
 	for _, productCategory := range *productCategories {
 		fmt.Println("ProductCategory ID - ", productCategory.ID)
 		fmt.Println("ProductCategory Name - ", productCategory.Name)
 	}
+
+	// Create product
+	chProduct := make(chan *efclient.Product)
+	go func() {
+		product, err := c.CreateProduct()
+		if err != nil {
+			fmt.Println(err)
+			log.Fatal(err)
+		}
+		chProduct <- product
+	}()
+
+	product := <-chProduct
+
+	fmt.Println("Product created - ", product)
 }
