@@ -60,9 +60,13 @@ func main() {
 	}
 
 	// Create product
+	productName := "FirstProduct"
+	productDescription := "Description of the first product"
+	productPrice := 1000
+	productCategory := 1
 	chProduct := make(chan *efclient.Product)
 	go func() {
-		product, err := c.CreateProduct()
+		product, err := c.CreateProduct(&productName, &productDescription, &productPrice, &productCategory)
 		if err != nil {
 			fmt.Println(err)
 			log.Fatal(err)
