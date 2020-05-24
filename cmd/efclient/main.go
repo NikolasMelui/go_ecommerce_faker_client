@@ -29,10 +29,16 @@ func main() {
 	c := efclient.NewClient(config)
 
 	// Get products
-	products, err := c.GetProducts()
-	if err != nil {
-		log.Fatal(err)
-	}
+	chProducts := make(chan *efclient.Products)
+	go func() {
+		products, err := c.GetProducts()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		chProducts <- products
+	}()
+	products := <-chProducts
 	for _, product := range *products {
 		fmt.Println("Product ID - ", product.ID)
 		fmt.Println("Product Name - ", product.Name)
@@ -40,10 +46,17 @@ func main() {
 	}
 
 	// Get product-categories
-	productCategories, err := c.GetProductCategories()
-	if err != nil {
-		log.Fatal(err)
-	}
+	chProductCategories := make(chan *efclient.ProductCategories)
+
+	go func() {
+		productCategories, err := c.GetProductCategories()
+		if err != nil {
+			log.Fatal(err)
+		}
+		chProductCategories <- productCategories
+	}()
+
+	productCategories := <-chProductCategories
 
 	for _, productCategory := range *productCategories {
 		fmt.Println("ProductCategory ID - ", productCategory.ID)
