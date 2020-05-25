@@ -43,10 +43,10 @@ func main() {
 				Name:        faker.Commerce().Department(),
 				Description: faker.Lorem().Sentence(10),
 			}
+			log.Println(fakeProductCategory)
 			_, err := c.CreateProductCategory(&fakeProductCategory)
 			if err != nil {
-				newerr := fmt.Errorf("%v", err)
-				log.Print(newerr)
+				log.Print(fmt.Errorf("%v", err))
 				// log.Fatal(err)
 			}
 		}(&firstLevelProductCategoryWG)
@@ -69,10 +69,10 @@ func main() {
 				Description:           faker.Lorem().Sentence(10),
 				ParentProductCategory: fakeParentProductCategory,
 			}
+			log.Println(fakeProductCategory)
 			_, err := c.CreateProductCategory(&fakeProductCategory)
 			if err != nil {
-				newerr := fmt.Errorf("%v", err)
-				log.Print(newerr)
+				log.Print(fmt.Errorf("%v", err))
 				// log.Fatal(err)
 			}
 		}(&secondLevelProductCategoryWG)
@@ -95,10 +95,10 @@ func main() {
 				Description:           faker.Lorem().Sentence(10),
 				ParentProductCategory: fakeParentProductCategory,
 			}
+			log.Println(fakeProductCategory)
 			_, err := c.CreateProductCategory(&fakeProductCategory)
 			if err != nil {
-				newerr := fmt.Errorf("%v", err)
-				log.Print(newerr)
+				log.Print(fmt.Errorf("%v", err))
 				// log.Fatal(err)
 			}
 		}(&thirdLevelProductCategoryWG)
@@ -114,10 +114,10 @@ func main() {
 				Name:        faker.Commerce().Color(),
 				Description: faker.Lorem().Sentence(10),
 			}
+			log.Println(fakeLabel)
 			_, err := c.CreateLabel(&fakeLabel)
 			if err != nil {
-				newerr := fmt.Errorf("%v", err)
-				log.Print(newerr)
+				log.Print(fmt.Errorf("%v", err))
 				// log.Fatal(err)
 			}
 		}(&labelWG)
@@ -145,10 +145,10 @@ func main() {
 				Labels:          fakeLabels,
 				ProductCategory: fakeProductCategory,
 			}
+			log.Println(fakeProduct)
 			_, err := c.CreateProduct(&fakeProduct)
 			if err != nil {
-				newerr := fmt.Errorf("%v", err)
-				log.Print(newerr)
+				log.Print(fmt.Errorf("%v", err))
 				// log.Fatal(err)
 			}
 		}(&productWG)
@@ -167,9 +167,9 @@ func main() {
 // }()
 // products := <-chProducts
 // for _, product := range *products {
-// 	fmt.Println("Product ID - ", product.ID)
-// 	fmt.Println("Product Name - ", product.Name)
-// 	fmt.Println("ProductCategory ID - ", string(product.ProductCategory))
+// 	log.Println("Product ID - ", product.ID)
+// 	log.Println("Product Name - ", product.Name)
+// 	log.Println("ProductCategory ID - ", string(product.ProductCategory))
 // }
 
 // Get product-categories
@@ -183,6 +183,6 @@ func main() {
 // }()
 // productCategories := <-chProductCategories
 // for _, productCategory := range *productCategories {
-// 	fmt.Println("ProductCategory ID - ", productCategory.ID)
-// 	fmt.Println("ProductCategory Name - ", productCategory.Name)
+// 	log.Println("ProductCategory ID - ", productCategory.ID)
+// 	log.Println("ProductCategory Name - ", productCategory.Name)
 // }
