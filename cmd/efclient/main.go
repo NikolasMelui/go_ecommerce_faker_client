@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -62,34 +63,27 @@ func main() {
 		fmt.Println("ProductCategory Name - ", productCategory.Name)
 	}
 
+	var productWG sync.WaitGroup
 	// Create 50 fake products
-	for i := 0; i < 50; i++ {
-
-		rand.Seed(time.Now().UnixNano())
-		fakeLabels := []int{rand.Intn(5-1+1) + 1, rand.Intn(5-1+1) + 1}
-
-		fakeProduct := efclient.ProductData{
-			Name:            faker.Commerce().ProductName(),
-			Description:     faker.Lorem().Sentence(20),
-			Price:           faker.Commerce().Price(),
-			Labels:          fakeLabels,
-			ProductCategory: rand.Intn(6-3) + 3,
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		// fmt.Println(fakeProduct)
-		chProduct := make(chan *efclient.Product)
-		go func() {
-			product, err := c.CreateProduct(&fakeProduct)
+	for i := 0; i < 500; i++ {
+		productWG.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			rand.Seed(time.Now().UnixNano())
+			fakeLabels := []int{rand.Intn(5-1+1) + 1, rand.Intn(5-1+1) + 1}
+			fakeProduct := efclient.ProductData{
+				Name:            faker.Commerce().ProductName(),
+				Description:     faker.Lorem().Sentence(20),
+				Price:           faker.Commerce().Price(),
+				Labels:          fakeLabels,
+				ProductCategory: rand.Intn(6-3) + 3,
+			}
+			_, err := c.CreateProduct(&fakeProduct)
 			if err != nil {
-				fmt.Println(err)
 				log.Fatal(err)
 			}
-			chProduct <- product
-		}()
-		product := <-chProduct
-		fmt.Println("Product created - ", product)
-
+		}(&productWG)
 	}
+	productWG.Wait()
 }
