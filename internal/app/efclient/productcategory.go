@@ -1,6 +1,7 @@
 package efclient
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -21,6 +22,13 @@ type ProductCategory struct {
 	ChildrenProductCategories []ProductCategory `json:"children_product_categories"`
 }
 
+// ProductCategoryData ...
+type ProductCategoryData struct {
+	Name                  string `json:"name"`
+	Description           string `json:"description"`
+	ParentProductCategory int    `json:"parent_product_category"`
+}
+
 // GetProductCategories ...
 func (c *Client) GetProductCategories() (*ProductCategories, error) {
 
@@ -37,4 +45,39 @@ func (c *Client) GetProductCategories() (*ProductCategories, error) {
 
 	return &res, nil
 
+}
+
+// CreateProductCategory ...
+func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData) (*ProductCategory, error) {
+
+	emptyProductParentCategory := 0
+	var checkedProductParentCategory *int
+	if &productCategoryData.ParentProductCategory != nil {
+		checkedProductParentCategory = &productCategoryData.ParentProductCategory
+	} else {
+		checkedProductParentCategory = &emptyProductParentCategory
+	}
+
+	requestData := map[string]interface{}{
+		"name":                    &productCategoryData.Name,
+		"description":             &productCategoryData.Description,
+		"product_parent_category": checkedProductParentCategory,
+	}
+
+	requestBody, err := json.Marshal(requestData)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/product-categories", c.BaseURL), bytes.NewBuffer(requestBody))
+	if err != nil {
+		return nil, err
+	}
+
+	var res ProductCategory
+	if err := c.SendRequest(req, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }
