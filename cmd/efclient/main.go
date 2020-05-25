@@ -36,6 +36,29 @@ func main() {
 	// Config the fakers locale
 	faker.Locale = locales.Ru
 
+	// Create 10 users
+	var userWG sync.WaitGroup
+	for i := 0; i < 10; i++ {
+		userWG.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			fakeUser := efclient.UserData{
+				Username: faker.Internet().UserName(),
+				Email:    faker.Internet().Email(),
+				Password: "password",
+				Phone:    faker.PhoneNumber().CellPhone(),
+			}
+			log.Println(fakeUser)
+			_, err := c.CreateUser(&fakeUser)
+			if err != nil {
+				log.Print(fmt.Errorf("%v", err))
+				// log.Fatal(err)
+			}
+		}(&userWG)
+	}
+	userWG.Wait()
+
 	// Create 20 first level product categories
 	var firstLevelProductCategoryWG sync.WaitGroup
 	for i := 0; i < 30; i++ {
