@@ -4,9 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/BurntSushi/toml"
 	"github.com/nikolasMelui/go_ecommerce_faker_client/internal/app/efclient"
+	"syreclabs.com/go/faker"
 )
 
 var configPath string
@@ -59,22 +62,34 @@ func main() {
 		fmt.Println("ProductCategory Name - ", productCategory.Name)
 	}
 
-	// Create product
-	productName := "FirstProduct"
-	productDescription := "Description of the first product"
-	productPrice := 1000
-	productCategory := 1
-	chProduct := make(chan *efclient.Product)
-	go func() {
-		product, err := c.CreateProduct(&productName, &productDescription, &productPrice, &productCategory)
+	// Create 50 fake products
+	for i := 0; i < 50; i++ {
+
+		rand.Seed(time.Now().UnixNano())
+		fakeLabels := []int{rand.Intn(5-1+1) + 1, rand.Intn(5-1+1) + 1}
+
+		fakeProduct := efclient.ProductData{
+			Name:            faker.Commerce().ProductName(),
+			Description:     faker.Lorem().Sentence(20),
+			Price:           faker.Commerce().Price(),
+			Labels:          fakeLabels,
+			ProductCategory: rand.Intn(6-3) + 3,
+		}
 		if err != nil {
-			fmt.Println(err)
 			log.Fatal(err)
 		}
-		chProduct <- product
-	}()
+		// fmt.Println(fakeProduct)
+		chProduct := make(chan *efclient.Product)
+		go func() {
+			product, err := c.CreateProduct(&fakeProduct)
+			if err != nil {
+				fmt.Println(err)
+				log.Fatal(err)
+			}
+			chProduct <- product
+		}()
+		product := <-chProduct
+		fmt.Println("Product created - ", product)
 
-	product := <-chProduct
-
-	fmt.Println("Product created - ", product)
+	}
 }
