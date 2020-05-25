@@ -11,6 +11,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/nikolasMelui/go_ecommerce_faker_client/internal/app/efclient"
 	"syreclabs.com/go/faker"
+	"syreclabs.com/go/faker/locales"
 )
 
 var configPath string
@@ -31,6 +32,9 @@ func main() {
 
 	// Create Client
 	c := efclient.NewClient(config)
+
+	// Config the fakers locale
+	faker.Locale = locales.Ru
 
 	// Create 20 first level product categories
 	var firstLevelProductCategoryWG sync.WaitGroup
