@@ -47,36 +47,6 @@ type Image struct {
 	ID int `json:"id"`
 }
 
-// Order ...
-type Order struct {
-	ID int `json:"id"`
-}
-
-// Cart ...
-type Cart struct {
-	ID int `json:"id"`
-}
-
-// Label ...
-type Label struct {
-	ID int `json:"id"`
-}
-
-// LabelData ...
-type LabelData struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
-// ProductCategoryData ...
-type ProductCategoryData struct {
-	ID                    int    `json:"id"`
-	Name                  string `json:"name"`
-	Description           string `json:"description"`
-	ParentProductCategory int    `json:"parent_product_category"`
-}
-
 // GetProducts ...
 func (c *Client) GetProducts() (*Products, error) {
 
@@ -87,67 +57,6 @@ func (c *Client) GetProducts() (*Products, error) {
 
 	var res Products
 
-	if err := c.SendRequest(req, &res); err != nil {
-		return nil, err
-	}
-
-	return &res, nil
-}
-
-// CreateProductCategory ...
-func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData) (*ProductCategory, error) {
-
-	emptyProductParentCategory := 0
-	var checkedProductParentCategory *int
-	if &productCategoryData.ParentProductCategory != nil {
-		checkedProductParentCategory = &productCategoryData.ParentProductCategory
-	} else {
-		checkedProductParentCategory = &emptyProductParentCategory
-	}
-
-	requestData := map[string]interface{}{
-		"name":                    &productCategoryData.Name,
-		"description":             &productCategoryData.Description,
-		"product_parent_category": checkedProductParentCategory,
-	}
-
-	requestBody, err := json.Marshal(requestData)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/product-categories", c.BaseURL), bytes.NewBuffer(requestBody))
-	if err != nil {
-		return nil, err
-	}
-
-	var res ProductCategory
-	if err := c.SendRequest(req, &res); err != nil {
-		return nil, err
-	}
-
-	return &res, nil
-}
-
-// CreateLabel ...
-func (c *Client) CreateLabel(labelData *LabelData) (*Label, error) {
-
-	requestData := map[string]interface{}{
-		"name":        &labelData.Name,
-		"description": &labelData.Description,
-	}
-
-	requestBody, err := json.Marshal(requestData)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/product-labels", c.BaseURL), bytes.NewBuffer(requestBody))
-	if err != nil {
-		return nil, err
-	}
-
-	var res Label
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
