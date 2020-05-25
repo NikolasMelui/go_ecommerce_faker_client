@@ -15,15 +15,24 @@ type Product struct {
 	ID              int             `json:"id"`
 	Name            string          `json:"name"`
 	Description     string          `json:"description"`
-	Price           int             `json:"price"`
+	Price           float64         `json:"price"`
 	Orders          []Order         `json:"orders"`
 	Carts           []Cart          `json:"carts"`
 	Properties      []Property      `json:"property"`
-	Lables          []Label         `json:"lables"`
+	Labels          []Label         `json:"labels"`
 	Images          []Image         `json:"images"`
 	ProductCategory json.RawMessage `json:"product_category"`
 	CreatedAt       string          `json:"created_at"`
 	UpdatedAt       string          `json:"updated_at"`
+}
+
+// ProductData ...
+type ProductData struct {
+	Name            string
+	Description     string
+	Price           float32
+	Labels          []int
+	ProductCategory int
 }
 
 // Property ...
@@ -71,13 +80,14 @@ func (c *Client) GetProducts() (*Products, error) {
 }
 
 // CreateProduct ...
-func (c *Client) CreateProduct(name *string, description *string, price *int, productCategory *int) (*Product, error) {
+func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 
 	requestData := map[string]interface{}{
-		"name":             &name,
-		"description":      &description,
-		"price":            &price,
-		"product_category": &productCategory,
+		"name":             &productData.Name,
+		"description":      &productData.Description,
+		"price":            &productData.Price,
+		"labels":           &productData.Labels,
+		"product_category": &productData.ProductCategory,
 	}
 
 	requestBody, err := json.Marshal(requestData)
@@ -88,7 +98,6 @@ func (c *Client) CreateProduct(name *string, description *string, price *int, pr
 	fmt.Println(requestBody)
 
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/products", c.BaseURL), bytes.NewBuffer(requestBody))
-	// req, err := http.NewRequest("POST", fmt.Sprintf("%s/products", c.BaseURL), bytes.NewBuffer(r))
 	if err != nil {
 		return nil, err
 	}
