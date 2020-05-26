@@ -4,7 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"sync"
+	"time"
+
+	"syreclabs.com/go/faker"
+	"syreclabs.com/go/faker/locales"
 )
 
 // User ...
@@ -56,4 +62,36 @@ func (c *Client) CreateUser(userData *UserData) (*User, error) {
 	}
 
 	return &res, nil
+}
+
+// CreateFakeUsers ...
+func (c *Client) CreateFakeUsers(wg *sync.WaitGroup, count int) int {
+	faker.Locale = locales.Ru
+	ch := make(chan int, count)
+	ch <- 0
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			fakeUser := UserData{
+				Username: faker.Internet().UserName(),
+				Email:    faker.Internet().Email(),
+				Password: "password",
+				Phone:    "+7" + faker.PhoneNumber().String(),
+			}
+			log.Println(fakeUser)
+			_, err := c.CreateUser(&fakeUser)
+			if err != nil {
+				log.Print(fmt.Errorf("%v", err))
+				// log.Fatal(err)
+			} else {
+				counter := <-ch
+				ch <- counter + 1
+			}
+		}(wg)
+	}
+	wg.Wait()
+	close(ch)
+	return <-ch
 }
