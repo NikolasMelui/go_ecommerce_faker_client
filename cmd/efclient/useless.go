@@ -1,3 +1,5 @@
+package main
+
 // Get products
 // chProducts := make(chan *efclient.Products)
 // go func() {
