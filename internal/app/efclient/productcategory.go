@@ -4,7 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
+	"sync"
+	"time"
+
+	"syreclabs.com/go/faker"
+	"syreclabs.com/go/faker/locales"
 )
 
 // ProductCategories ...
@@ -50,18 +57,10 @@ func (c *Client) GetProductCategories() (*ProductCategories, error) {
 // CreateProductCategory ...
 func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData) (*ProductCategory, error) {
 
-	emptyProductParentCategory := 0
-	var checkedProductParentCategory *int
-	if &productCategoryData.ParentProductCategory != nil {
-		checkedProductParentCategory = &productCategoryData.ParentProductCategory
-	} else {
-		checkedProductParentCategory = &emptyProductParentCategory
-	}
-
 	requestData := map[string]interface{}{
 		"name":                    &productCategoryData.Name,
 		"description":             &productCategoryData.Description,
-		"product_parent_category": checkedProductParentCategory,
+		"parent_product_category": &productCategoryData.ParentProductCategory,
 	}
 
 	requestBody, err := json.Marshal(requestData)
@@ -80,4 +79,40 @@ func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData)
 	}
 
 	return &res, nil
+}
+
+// CreateFakeProductCategories ...
+func (c *Client) CreateFakeProductCategories(wg *sync.WaitGroup, count int, firstParentID int, lastParentID int) int {
+	faker.Locale = locales.Ru
+	ch := make(chan int, count)
+	ch <- 0
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			parentID := 0
+			if firstParentID > 0 {
+				rand.Seed(time.Now().UnixNano())
+				parentID = rand.Intn(lastParentID-firstParentID+1) + firstParentID
+			}
+			fakeProductCategory := ProductCategoryData{
+				Name:                  faker.Commerce().Department(),
+				Description:           faker.Lorem().Sentence(10),
+				ParentProductCategory: parentID,
+			}
+			log.Println(fakeProductCategory)
+			_, err := c.CreateProductCategory(&fakeProductCategory)
+			if err != nil {
+				log.Print(fmt.Errorf("%v", err))
+				// log.Fatal(err)
+			} else {
+				counter := <-ch
+				ch <- counter + 1
+			}
+		}(wg)
+	}
+	wg.Wait()
+	close(ch)
+	return <-ch
 }
