@@ -1,4 +1,4 @@
-.PHONY: build run drop_carts drop_orders drop_products drop_products++ drop_tables drop_users
+.PHONY: build run drop_carts drop_orders drop_products drop_products++ drop_tables drop_users drop_counterparties
 
 build:
 	go build -v ./cmd/efclient
@@ -23,5 +23,8 @@ drop_tables:
 
 drop_users:
 	psql -d b2b -a -f ./sql_scripts/drop_users.sql
+
+drop_counterparties:
+	psql -d b2b -a -f ./sql_scripts/drop_counterparties.sql
 
 .DEFAULT_GOAL := build
