@@ -16,12 +16,12 @@ import (
 
 // Counterparty ...
 type Counterparty struct {
-	ID                    int                    `json:"id"`
-	CreditLimit           int                    `json:"credit_limit"`
-	User                  []User                 `json:"user"`
-	Orders                []Order                `json:"orders"`
-	CounterpartyDocuments []CounterpartyDocument `json:"counterparty_documents"`
-	Title                 string                 `json:"title"`
+	ID                    int             `json:"id"`
+	CreditLimit           int             `json:"credit_limit"`
+	User                  json.RawMessage `json:"user"`
+	Orders                json.RawMessage `json:"orders"`
+	CounterpartyDocuments json.RawMessage `json:"counterparty_documents"`
+	Title                 string          `json:"title"`
 }
 
 // CounterpartyData ...
