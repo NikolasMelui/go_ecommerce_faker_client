@@ -20,7 +20,7 @@ type ProductCategories = []ProductCategory
 // ProductCategory ...
 type ProductCategory struct {
 	ID                        int               `json:"id"`
-	Name                      string            `json:"name"`
+	Title                     string            `json:"title"`
 	Description               string            `json:"description"`
 	ParentProductCategory     json.RawMessage   `json:"parent_product_category"`
 	CreatedAt                 string            `json:"created_at"`
@@ -31,7 +31,7 @@ type ProductCategory struct {
 
 // ProductCategoryData ...
 type ProductCategoryData struct {
-	Name                  string `json:"name"`
+	Title                 string `json:"title"`
 	Description           string `json:"description"`
 	ParentProductCategory int    `json:"parent_product_category"`
 }
@@ -58,7 +58,7 @@ func (c *Client) GetProductCategories() (*ProductCategories, error) {
 func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData) (*ProductCategory, error) {
 
 	requestData := map[string]interface{}{
-		"name":                    &productCategoryData.Name,
+		"title":                   &productCategoryData.Title,
 		"description":             &productCategoryData.Description,
 		"parent_product_category": &productCategoryData.ParentProductCategory,
 	}
@@ -97,7 +97,7 @@ func (c *Client) CreateFakeProductCategories(wg *sync.WaitGroup, count int, firs
 				parentID = rand.Intn(lastParentID-firstParentID+1) + firstParentID
 			}
 			fakeProductCategory := ProductCategoryData{
-				Name:                  faker.Commerce().Department(),
+				Title:                 faker.Commerce().Department(),
 				Description:           faker.Lorem().Sentence(10),
 				ParentProductCategory: parentID,
 			}
