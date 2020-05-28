@@ -15,8 +15,8 @@ type Product struct {
 	ID              int             `json:"id"`
 	Title           string          `json:"title"`
 	Description     string          `json:"description"`
-	Price           float64         `json:"price"`
-	Orders          []Order         `json:"orders"`
+	Price           float32         `json:"price"`
+	Orders          json.RawMessage `json:"orders"`
 	Properties      []Property      `json:"property"`
 	Labels          []Label         `json:"labels"`
 	Images          []Image         `json:"images"`
