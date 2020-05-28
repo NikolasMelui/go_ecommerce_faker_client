@@ -4,7 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
+	"sync"
+	"time"
+
+	"syreclabs.com/go/faker"
+	"syreclabs.com/go/faker/locales"
 )
 
 // Counterparty ...
@@ -14,14 +21,14 @@ type Counterparty struct {
 	User                  []User                 `json:"user"`
 	Orders                []Order                `json:"orders"`
 	CounterpartyDocuments []CounterpartyDocument `json:"counterparty_documents"`
-	Title                 string                 `json:"name"`
+	Title                 string                 `json:"title"`
 }
 
 // CounterpartyData ...
 type CounterpartyData struct {
 	CreditLimit int    `json:"credit_limit"`
 	User        int    `json:"user"`
-	Title       string `json:"name"`
+	Title       string `json:"title"`
 }
 
 // CreateCounterparty ...
@@ -50,4 +57,42 @@ func (c *Client) CreateCounterparty(counterpartyData *CounterpartyData) (*Counte
 	}
 
 	return &res, nil
+}
+
+// CreateFakeCounterparties ...
+func (c *Client) CreateFakeCounterparties(wg *sync.WaitGroup, count int) int {
+	faker.Locale = locales.Ru
+	ch := make(chan int, count)
+	ch <- 0
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			rand.Seed(time.Now().UnixNano())
+			minCreditLimit := 500000
+			maxCreditLimit := 5000000
+			creditLimit := rand.Intn(maxCreditLimit-minCreditLimit+1) + minCreditLimit
+			firstUserID := 1
+			lastUserID := count / 2
+			userID := fmt.Sprintf(%v, rand.Intn(lastUserID-firstUserID+1) + firstUserID)
+			fakeCounterparty := CounterpartyData{
+				Title:       faker.Company().Name() + " " + faker.Company().Suffix(),
+				CreditLimit: creditLimit,
+				User:        userID,
+			}
+			log.Println(fakeCounterparty)
+			_, err := c.CreateCounterparty(&fakeCounterparty)
+			if err != nil {
+				log.Print(fmt.Errorf("%v", err))
+				// log.Fatal(err)
+			} else {
+				counter := <-ch
+				ch <- counter + 1
+			}
+		}(wg)
+	}
+	wg.Wait()
+	close(ch)
+	return <-ch
 }
