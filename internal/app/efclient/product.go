@@ -25,7 +25,7 @@ type Product struct {
 	Price           float32         `json:"price"`
 	Orders          json.RawMessage `json:"orders"`
 	Properties      []Property      `json:"property"`
-	Labels          []Label         `json:"labels"`
+	ProductLabels   []Label         `json:"product_labels"`
 	Images          []Image         `json:"images"`
 	ProductCategory json.RawMessage `json:"product_category"`
 	CreatedAt       string          `json:"created_at"`
@@ -37,7 +37,7 @@ type ProductData struct {
 	Title           string
 	Description     string
 	Price           float32
-	Labels          []int
+	ProductLabels   []int
 	ProductCategory int
 }
 
@@ -77,7 +77,7 @@ func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 		"title":            &productData.Title,
 		"description":      &productData.Description,
 		"price":            &productData.Price,
-		"labels":           &productData.Labels,
+		"product_labels":   &productData.ProductLabels,
 		"product_category": &productData.ProductCategory,
 	}
 
@@ -101,7 +101,7 @@ func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 }
 
 // CreateFakeProducts ...
-func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, labelsCount int, firstProductCategoryID int, lastProductCategoryID int) int {
+func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, productLabelsCount int, firstProductCategoryID int, lastProductCategoryID int) int {
 	faker.Locale = locales.Ru
 	ch := make(chan int, count)
 	ch <- 0
@@ -111,13 +111,13 @@ func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, labelsCount i
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
 			rand.Seed(time.Now().UnixNano())
-			fakeLabels := []int{rand.Intn(labelsCount-1+1) + 1, rand.Intn(labelsCount-1+1) + 1}
+			fakeProductLabels := []int{rand.Intn(productLabelsCount-1+1) + 1, rand.Intn(productLabelsCount-1+1) + 1}
 			fakeProductCategoryID := rand.Intn(lastProductCategoryID-firstProductCategoryID+1) + firstProductCategoryID
 			fakeProduct := ProductData{
 				Title:           faker.Commerce().ProductName(),
 				Description:     faker.Lorem().Sentence(20),
 				Price:           faker.Commerce().Price(),
-				Labels:          fakeLabels,
+				ProductLabels:   fakeProductLabels,
 				ProductCategory: fakeProductCategoryID,
 			}
 			log.Println(fakeProduct)
