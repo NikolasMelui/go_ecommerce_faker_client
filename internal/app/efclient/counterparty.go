@@ -75,7 +75,7 @@ func (c *Client) CreateFakeCounterparties(wg *sync.WaitGroup, count int) int {
 			creditLimit := rand.Intn(maxCreditLimit-minCreditLimit+1) + minCreditLimit
 			firstUserID := 1
 			lastUserID := count / 2
-			userID := fmt.Sprintf(%v, rand.Intn(lastUserID-firstUserID+1) + firstUserID)
+			userID := rand.Intn(lastUserID-firstUserID+1) + firstUserID
 			fakeCounterparty := CounterpartyData{
 				Title:       faker.Company().Name() + " " + faker.Company().Suffix(),
 				CreditLimit: creditLimit,
