@@ -6,9 +6,6 @@ build:
 run:
 	go build -v ./cmd/efclient; ./efclient
 
-drop_carts:
-	psql -d b2b -a -f ./sql_scripts/drop_carts.sql
-
 drop_orders:
 	psql -d b2b -a -f ./sql_scripts/drop_orders.sql
 
