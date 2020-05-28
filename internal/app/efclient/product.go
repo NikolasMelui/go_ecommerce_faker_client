@@ -4,7 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
+	"sync"
+	"time"
+
+	"syreclabs.com/go/faker"
+	"syreclabs.com/go/faker/locales"
 )
 
 // Products ...
@@ -37,7 +44,7 @@ type ProductData struct {
 // Property ...
 type Property struct {
 	ID    int    `json:"id"`
-	title string `json:"title"`
+	Title string `json:"title"`
 	Value string `json:"value"`
 }
 
@@ -91,4 +98,40 @@ func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 	}
 
 	return &res, nil
+}
+
+// CreateFakeProducts ...
+func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, labelsCount int, firstProductCategoryID int, lastProductCategoryID int) int {
+	faker.Locale = locales.Ru
+	ch := make(chan int, count)
+	ch <- 0
+	for i := 0; i < count; i++ {
+		wg.Add(1)
+		time.Sleep(time.Millisecond * 50)
+		go func(wg *sync.WaitGroup) {
+			defer wg.Done()
+			rand.Seed(time.Now().UnixNano())
+			fakeLabels := []int{rand.Intn(labelsCount-1+1) + 1, rand.Intn(labelsCount-1+1) + 1}
+			fakeProductCategoryID := rand.Intn(lastProductCategoryID-firstProductCategoryID+1) + firstProductCategoryID
+			fakeProduct := ProductData{
+				Title:           faker.Commerce().ProductName(),
+				Description:     faker.Lorem().Sentence(20),
+				Price:           faker.Commerce().Price(),
+				Labels:          fakeLabels,
+				ProductCategory: fakeProductCategoryID,
+			}
+			log.Println(fakeProduct)
+			_, err := c.CreateProduct(&fakeProduct)
+			if err != nil {
+				log.Print(fmt.Errorf("%v", err))
+				// log.Fatal(err)
+			} else {
+				counter := <-ch
+				ch <- counter + 1
+			}
+		}(wg)
+	}
+	wg.Wait()
+	close(ch)
+	return <-ch
 }
