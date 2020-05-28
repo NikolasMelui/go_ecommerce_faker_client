@@ -14,7 +14,7 @@ type Label struct {
 
 // LabelData ...
 type LabelData struct {
-	Name        string `json:"name"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
@@ -22,7 +22,7 @@ type LabelData struct {
 func (c *Client) CreateLabel(labelData *LabelData) (*Label, error) {
 
 	requestData := map[string]interface{}{
-		"name":        &labelData.Name,
+		"title":       &labelData.Title,
 		"description": &labelData.Description,
 	}
 
