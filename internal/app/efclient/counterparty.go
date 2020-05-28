@@ -13,7 +13,6 @@ type Counterparty struct {
 	CreditLimit           int                    `json:"credit_limit"`
 	User                  []User                 `json:"user"`
 	Orders                []Order                `json:"orders"`
-	Carts                 []Cart                 `json:"carts"`
 	CounterpartyDocuments []CounterpartyDocument `json:"counterparty_documents"`
 	Name                  string                 `json:"name"`
 }
