@@ -15,17 +15,17 @@ import (
 
 // User ...
 type User struct {
-	ID                 int            `json:"id"`
-	Username           string         `json:"username"`
-	Email              string         `json:"email"`
-	Provider           string         `json:"provider"`
-	Password           string         `json:"password"`
-	ResetPasswordToken string         `json:"resetPasswordToken"`
-	Confirmed          bool           `json:"confirmed"`
-	Blocked            bool           `json:"blocked"`
-	Role               string         `json:"role"`
-	Counterparties     []Counterparty `json:"counterparties"`
-	Phone              string         `json:"phone"`
+	ID                 int             `json:"id"`
+	Username           string          `json:"username"`
+	Email              string          `json:"email"`
+	Provider           string          `json:"provider"`
+	Password           string          `json:"password"`
+	ResetPasswordToken string          `json:"resetPasswordToken"`
+	Confirmed          bool            `json:"confirmed"`
+	Blocked            bool            `json:"blocked"`
+	Role               string          `json:"role"`
+	Counterparties     json.RawMessage `json:"counterparties"`
+	Phone              string          `json:"phone"`
 }
 
 // UserData ...
