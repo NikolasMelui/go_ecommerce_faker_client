@@ -13,7 +13,7 @@ type Products = []Product
 // Product ...
 type Product struct {
 	ID              int             `json:"id"`
-	Name            string          `json:"name"`
+	Title           string          `json:"title"`
 	Description     string          `json:"description"`
 	Price           float64         `json:"price"`
 	Orders          []Order         `json:"orders"`
@@ -27,7 +27,7 @@ type Product struct {
 
 // ProductData ...
 type ProductData struct {
-	Name            string
+	Title           string
 	Description     string
 	Price           float32
 	Labels          []int
@@ -37,7 +37,7 @@ type ProductData struct {
 // Property ...
 type Property struct {
 	ID    int    `json:"id"`
-	Name  string `json:"name"`
+	title string `json:"title"`
 	Value string `json:"value"`
 }
 
@@ -67,7 +67,7 @@ func (c *Client) GetProducts() (*Products, error) {
 func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 
 	requestData := map[string]interface{}{
-		"name":             &productData.Name,
+		"title":            &productData.Title,
 		"description":      &productData.Description,
 		"price":            &productData.Price,
 		"labels":           &productData.Labels,
