@@ -33,6 +33,11 @@ func main() {
 	fakeUsersCount := c.CreateFakeUsers(&createFakeUsersWG, 10)
 	log.Println(fakeUsersCount)
 
+	// Create fake counterparties
+	var createFakeCounterpartiesWG sync.WaitGroup
+	fakeCounterpartiesCount := c.CreateFakeCounterparties(&createFakeCounterpartiesWG, 20)
+	log.Println(fakeCounterpartiesCount)
+
 	// Create first level fake product categories
 	var createFirstLvlFakeProductCategoryWG sync.WaitGroup
 	firstLvlFakeProductCategoriesCount := c.CreateFakeProductCategories(&createFirstLvlFakeProductCategoryWG, 10, 0, 0)
