@@ -4,7 +4,7 @@ package efclient
 type CounterpartyDocument struct {
 	ID           int          `json:"id"`
 	Counterparty Counterparty `json:"counterparty"`
-	Name         string       `json:"name"`
+	Title        string       `json:"title"`
 	Description  string       `json:"description"`
 	URL          string       `json:"url"`
 }
@@ -12,7 +12,7 @@ type CounterpartyDocument struct {
 // CounterpartyDocumentData ...
 type CounterpartyDocumentData struct {
 	Counterparty Counterparty `json:"counterparty"`
-	Name         string       `json:"name"`
+	Title        string       `json:"title"`
 	Description  string       `json:"description"`
 	URL          string       `json:"url"`
 }
