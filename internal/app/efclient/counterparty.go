@@ -14,14 +14,14 @@ type Counterparty struct {
 	User                  []User                 `json:"user"`
 	Orders                []Order                `json:"orders"`
 	CounterpartyDocuments []CounterpartyDocument `json:"counterparty_documents"`
-	Name                  string                 `json:"name"`
+	Title                 string                 `json:"name"`
 }
 
 // CounterpartyData ...
 type CounterpartyData struct {
 	CreditLimit int    `json:"credit_limit"`
 	User        int    `json:"user"`
-	Name        string `json:"name"`
+	Title       string `json:"name"`
 }
 
 // CreateCounterparty ...
@@ -30,7 +30,7 @@ func (c *Client) CreateCounterparty(counterpartyData *CounterpartyData) (*Counte
 	requestData := map[string]interface{}{
 		"credit_limit": &counterpartyData.CreditLimit,
 		"user":         &counterpartyData.User,
-		"name":         &counterpartyData.Name,
+		"title":        &counterpartyData.Title,
 	}
 
 	requestBody, err := json.Marshal(requestData)
