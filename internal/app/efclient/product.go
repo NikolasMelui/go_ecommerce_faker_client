@@ -17,7 +17,6 @@ type Product struct {
 	Description     string          `json:"description"`
 	Price           float64         `json:"price"`
 	Orders          []Order         `json:"orders"`
-	Carts           []Cart          `json:"carts"`
 	Properties      []Property      `json:"property"`
 	Labels          []Label         `json:"labels"`
 	Images          []Image         `json:"images"`
