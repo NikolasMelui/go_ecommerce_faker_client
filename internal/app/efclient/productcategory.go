@@ -38,46 +38,36 @@ type ProductCategoryData struct {
 
 // GetProductCategories ...
 func (c *Client) GetProductCategories() (*ProductCategories, error) {
-
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/product-categories", c.BaseURL), nil)
 	if err != nil {
 		return nil, err
 	}
-
 	var res ProductCategories
-
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
-
 }
 
 // CreateProductCategory ...
 func (c *Client) CreateProductCategory(productCategoryData *ProductCategoryData) (*ProductCategory, error) {
-
 	requestData := map[string]interface{}{
 		"title":                   &productCategoryData.Title,
 		"description":             &productCategoryData.Description,
 		"parent_product_category": &productCategoryData.ParentProductCategory,
 	}
-
 	requestBody, err := json.Marshal(requestData)
 	if err != nil {
 		return nil, err
 	}
-
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/product-categories", c.BaseURL), bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
 	}
-
 	var res ProductCategory
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
