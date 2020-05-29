@@ -14,17 +14,13 @@ type errorResponse struct {
 
 // SendRequest ...
 func (c *Client) SendRequest(req *http.Request, v interface{}) error {
-
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
-
 	defer res.Body.Close()
-
 	if res.StatusCode != http.StatusOK {
 		var errRes errorResponse
 		if err := json.NewDecoder(res.Body).Decode(&errRes); err == nil {
@@ -32,12 +28,9 @@ func (c *Client) SendRequest(req *http.Request, v interface{}) error {
 		}
 		return fmt.Errorf("Unknown error, status code: %d", res.StatusCode)
 	}
-
 	result := v
-
 	if err := json.NewDecoder(res.Body).Decode(&result); err != nil {
 		return err
 	}
-
 	return nil
 }
