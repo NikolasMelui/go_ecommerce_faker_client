@@ -1,1 +1,3 @@
 ./efclient
+data/**
+!data/sample.*
