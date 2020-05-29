@@ -55,24 +55,19 @@ type Image struct {
 
 // GetProducts ...
 func (c *Client) GetProducts() (*Products, error) {
-
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/products", c.BaseURL), nil)
 	if err != nil {
 		return nil, err
 	}
-
 	var res Products
-
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
 // CreateProduct ...
 func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
-
 	requestData := map[string]interface{}{
 		"title":            &productData.Title,
 		"description":      &productData.Description,
@@ -80,28 +75,23 @@ func (c *Client) CreateProduct(productData *ProductData) (*Product, error) {
 		"product_labels":   &productData.ProductLabels,
 		"product_category": &productData.ProductCategory,
 	}
-
 	requestBody, err := json.Marshal(requestData)
 	if err != nil {
 		return nil, err
 	}
-
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/products", c.BaseURL), bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
 	}
-
 	var res Product
-
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
 // CreateFakeProducts ...
-func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, productLabelsCount int, firstProductCategoryID int, lastProductCategoryID int) int {
+func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, labelsCount int, firstProductCategoryID int, lastProductCategoryID int) int {
 	faker.Locale = locales.Ru
 	ch := make(chan int, count)
 	ch <- 0
@@ -111,13 +101,15 @@ func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, productLabels
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
 			rand.Seed(time.Now().UnixNano())
-			fakeProductLabels := []int{rand.Intn(productLabelsCount) + 1, rand.Intn(productLabelsCount) + 1}
+			firstLabelID := rand.Intn(labelsCount) + 1
+			secondLabelID := rand.Intn(labelsCount) + 1
+			fakeLabels := []int{firstLabelID, secondLabelID}
 			fakeProductCategoryID := rand.Intn(lastProductCategoryID-firstProductCategoryID+1) + firstProductCategoryID
 			fakeProduct := ProductData{
 				Title:           faker.Commerce().ProductName(),
 				Description:     faker.Lorem().Sentence(20),
 				Price:           faker.Commerce().Price(),
-				ProductLabels:   fakeProductLabels,
+				ProductLabels:   fakeLabels,
 				ProductCategory: fakeProductCategoryID,
 			}
 			log.Println(fakeProduct)
