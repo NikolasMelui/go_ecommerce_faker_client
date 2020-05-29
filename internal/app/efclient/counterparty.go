@@ -33,29 +33,23 @@ type CounterpartyData struct {
 
 // CreateCounterparty ...
 func (c *Client) CreateCounterparty(counterpartyData *CounterpartyData) (*Counterparty, error) {
-
 	requestData := map[string]interface{}{
 		"credit_limit": &counterpartyData.CreditLimit,
 		"user":         &counterpartyData.User,
 		"title":        &counterpartyData.Title,
 	}
-
 	requestBody, err := json.Marshal(requestData)
 	if err != nil {
 		return nil, err
 	}
-
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/counterparties", c.BaseURL), bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
 	}
-
 	var res Counterparty
-
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
