@@ -72,7 +72,7 @@ func (c *Client) CreateFakeCounterpartyDocuments(wg *sync.WaitGroup, count int) 
 	ch <- 0
 	for i := 0; i < count; i++ {
 		wg.Add(1)
-		time.Sleep(time.Millisecond * 500)
+		time.Sleep(time.Millisecond * 50)
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
 			rand.Seed(time.Now().UnixNano())
