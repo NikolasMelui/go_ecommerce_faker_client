@@ -111,7 +111,7 @@ func (c *Client) CreateFakeProducts(wg *sync.WaitGroup, count int, productLabels
 		go func(wg *sync.WaitGroup) {
 			defer wg.Done()
 			rand.Seed(time.Now().UnixNano())
-			fakeProductLabels := []int{rand.Intn(productLabelsCount-1+1) + 1, rand.Intn(productLabelsCount-1+1) + 1}
+			fakeProductLabels := []int{rand.Intn(productLabelsCount) + 1, rand.Intn(productLabelsCount) + 1}
 			fakeProductCategoryID := rand.Intn(lastProductCategoryID-firstProductCategoryID+1) + firstProductCategoryID
 			fakeProduct := ProductData{
 				Title:           faker.Commerce().ProductName(),
