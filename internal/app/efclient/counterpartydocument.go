@@ -34,25 +34,20 @@ type CounterpartyDocumentData struct {
 
 // CreateCounterpartyDocument ...
 func (c *Client) CreateCounterpartyDocument(counterpartyDocumentData *CounterpartyDocumentData) (*CounterpartyDocument, error) {
-
 	if err := helper.CreateFakeFile(counterpartyDocumentData.Title, 1e3); err != nil {
 		return nil, err
 	}
-
 	log.Println("File was created seccessfully")
-
 	requestData := map[string]interface{}{
 		"title":        &counterpartyDocumentData.Title,
 		"description":  &counterpartyDocumentData.Description,
 		"url":          &counterpartyDocumentData.URL,
 		"counterparty": &counterpartyDocumentData.Counterparty,
 	}
-
 	requestBody, err := json.Marshal(requestData)
 	if err != nil {
 		return nil, err
 	}
-
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/counterparty-documents", c.BaseURL), bytes.NewBuffer(requestBody))
 	if err != nil {
 		return nil, err
@@ -61,7 +56,6 @@ func (c *Client) CreateCounterpartyDocument(counterpartyDocumentData *Counterpar
 	if err := c.SendRequest(req, &res); err != nil {
 		return nil, err
 	}
-
 	return &res, nil
 }
 
