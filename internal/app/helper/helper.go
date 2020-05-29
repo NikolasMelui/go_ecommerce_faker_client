@@ -8,7 +8,7 @@ import (
 // CreateFakeFile ...
 func CreateFakeFile(name string, size int64) error {
 
-	sourceFile, err := os.Open("./data/sample/sample.pdf")
+	sourceFile, err := os.Open("./data/sample.pdf")
 	if err != nil {
 		return err
 	}
