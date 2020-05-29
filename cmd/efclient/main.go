@@ -29,46 +29,59 @@ func main() {
 	c := efclient.NewClient(config)
 
 	// Create fake users
-	fakeUsersNeed := 10
-	var createFakeUsersWG sync.WaitGroup
-	fakeUsersCount := c.CreateFakeUsers(&createFakeUsersWG, fakeUsersNeed)
-	log.Println(fakeUsersCount)
+	usersPlan := 10
+	var createUsersWG sync.WaitGroup
+	usersCount := c.CreateFakeUsers(&createUsersWG, usersPlan)
+	log.Println(usersCount)
 
 	// Create fake counterparties
-	fakeCounterpatriesNeed := fakeUsersNeed * 2
-	var createFakeCounterpartiesWG sync.WaitGroup
-	fakeCounterpartiesCount := c.CreateFakeCounterparties(&createFakeCounterpartiesWG, fakeCounterpatriesNeed)
-	log.Println(fakeCounterpartiesCount)
+	counterpatriesPlan := usersPlan * 2
+	var createCounterpartiesWG sync.WaitGroup
+	counterpartiesCount := c.CreateFakeCounterparties(&createCounterpartiesWG, counterpatriesPlan)
+	log.Println(counterpartiesCount)
 
 	// Create fake counterparty documents
-	fakeCounterpartyDocumentsNeed := fakeCounterpatriesNeed * 2
-	var createFakeCounterpartyDocumentsWG sync.WaitGroup
-	fakeCounterpartyDocumentsCount := c.CreateFakeCounterpartyDocuments(&createFakeCounterpartyDocumentsWG, fakeCounterpartyDocumentsNeed)
-	log.Println(fakeCounterpartyDocumentsCount)
+	counterpartyDocumentsPlan := counterpatriesPlan * 2
+	var createCounterpartyDocumentsWG sync.WaitGroup
+	counterpartyDocumentsCount := c.CreateFakeCounterpartyDocuments(&createCounterpartyDocumentsWG, counterpartyDocumentsPlan)
+	log.Println(counterpartyDocumentsCount)
 
-	// Create first level fake product categories
-	var createFirstLvlFakeProductCategoryWG sync.WaitGroup
-	firstLvlFakeProductCategoriesCount := c.CreateFakeProductCategories(&createFirstLvlFakeProductCategoryWG, 10, 0, 0)
-	log.Println(firstLvlFakeProductCategoriesCount)
+	// Create first level fake product categories (PC)
+	firstLvlPCPlan := 10
+	var createFirstLvlPCWG sync.WaitGroup
+	firstLvlPCFirstParentID := 0
+	firstLvlPCLastParentID := 0
+	firstLvlPCCount := c.CreateFakeProductCategories(&createFirstLvlPCWG, firstLvlPCPlan, firstLvlPCFirstParentID, firstLvlPCLastParentID)
+	log.Println(firstLvlPCCount)
 
-	// Create second level fake product categories
-	var createSecondLvlFakeProductCategoryWG sync.WaitGroup
-	secondLvlFakeProductCategoriesCount := c.CreateFakeProductCategories(&createSecondLvlFakeProductCategoryWG, 20, 1, 10)
-	log.Println(secondLvlFakeProductCategoriesCount)
+	// Create second level fake product categories (PC)
+	secondLvlPCPlan := firstLvlPCPlan * 2
+	secondLvlPCFirstParentID := 1
+	secondLvlPCLastParentID := firstLvlPCPlan
+	var createSecondLvlPCWG sync.WaitGroup
+	secondLvlPCCount := c.CreateFakeProductCategories(&createSecondLvlPCWG, secondLvlPCPlan, secondLvlPCFirstParentID, secondLvlPCLastParentID)
+	log.Println(secondLvlPCCount)
 
-	// Create third level fake product categories
-	var createThirdLvlFakeProductCategoryWG sync.WaitGroup
-	thirdLvlFakeProductCategoriesCount := c.CreateFakeProductCategories(&createThirdLvlFakeProductCategoryWG, 80, 11, 30)
-	log.Println(thirdLvlFakeProductCategoriesCount)
+	// Create third level fake product categories (PC)
+	thirdLvlPCPlan := secondLvlPCPlan * 4
+	thirdLvlPCFirstParentID := firstLvlPCPlan + 1
+	thirdLvlPCLastParentID := secondLvlPCPlan
+	var createThirdLvlPCWG sync.WaitGroup
+	thirdLvlPCCount := c.CreateFakeProductCategories(&createThirdLvlPCWG, thirdLvlPCPlan, thirdLvlPCFirstParentID, thirdLvlPCLastParentID)
+	log.Println(thirdLvlPCCount)
 
 	// Create fake labels
-	var createFakeLabelsWG sync.WaitGroup
-	fakeLabelsCount := c.CreateFakeLabels(&createFakeLabelsWG, 20)
-	log.Println(fakeLabelsCount)
+	labelsNeed := 20
+	var createLabelsWG sync.WaitGroup
+	labelsCount := c.CreateFakeLabels(&createLabelsWG, labelsNeed)
+	log.Println(labelsCount)
 
 	// Create fake products
-	var createFakeProductsWG sync.WaitGroup
-	fakeProductsCount := c.CreateFakeProducts(&createFakeProductsWG, 100, 20, 21, 90)
-	log.Println(fakeProductsCount)
+	productsNeed := 100
+	var createProductsWG sync.WaitGroup
+	firstProductCategoryID := firstLvlPCPlan + secondLvlPCPlan + 1
+	lastProductCategoryID := firstLvlPCPlan + secondLvlPCPlan + thirdLvlPCPlan
+	productsCount := c.CreateFakeProducts(&createProductsWG, productsNeed, labelsNeed, firstProductCategoryID, lastProductCategoryID)
+	log.Println(productsCount)
 
 }
