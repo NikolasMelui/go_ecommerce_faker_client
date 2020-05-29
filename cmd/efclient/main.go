@@ -29,14 +29,22 @@ func main() {
 	c := efclient.NewClient(config)
 
 	// Create fake users
+	fakeUsersNeed := 10
 	var createFakeUsersWG sync.WaitGroup
-	fakeUsersCount := c.CreateFakeUsers(&createFakeUsersWG, 10)
+	fakeUsersCount := c.CreateFakeUsers(&createFakeUsersWG, fakeUsersNeed)
 	log.Println(fakeUsersCount)
 
 	// Create fake counterparties
+	fakeCounterpatriesNeed := fakeUsersNeed * 2
 	var createFakeCounterpartiesWG sync.WaitGroup
-	fakeCounterpartiesCount := c.CreateFakeCounterparties(&createFakeCounterpartiesWG, 20)
+	fakeCounterpartiesCount := c.CreateFakeCounterparties(&createFakeCounterpartiesWG, fakeCounterpatriesNeed)
 	log.Println(fakeCounterpartiesCount)
+
+	// Create fake counterparty documents
+	fakeCounterpartyDocumentsNeed := fakeCounterpatriesNeed * 2
+	var createFakeCounterpartyDocumentsWG sync.WaitGroup
+	fakeCounterpartyDocumentsCount := c.CreateFakeCounterpartyDocuments(&createFakeCounterpartyDocumentsWG, fakeCounterpartyDocumentsNeed)
+	log.Println(fakeCounterpartyDocumentsCount)
 
 	// Create first level fake product categories
 	var createFirstLvlFakeProductCategoryWG sync.WaitGroup
