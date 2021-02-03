@@ -1,3 +1,5 @@
 ./efclient
-data/*
-!data/.gitkeep
+files/documents/*
+!files/documents/.gitkeep
+files/images/*
+!files/images/.gitkeep

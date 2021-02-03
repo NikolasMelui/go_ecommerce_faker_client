@@ -25,6 +25,6 @@ drop_counterparties:
 	psql -d b2b -a -f ./sql_scripts/drop_counterparties.sql
 
 drop_counterpartydocuments:
-	psql -d b2b -a -f ./sql_scripts/drop_counterpartydocuments.sql && rm -rf ./data/*.pdf
+	psql -d b2b -a -f ./sql_scripts/drop_counterpartydocuments.sql && rm -rf ./files/documents/*.pdf && rm -rf ./files/images/*.png
 
 .DEFAULT_GOAL := build

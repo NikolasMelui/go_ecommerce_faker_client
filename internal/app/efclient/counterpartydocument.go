@@ -34,7 +34,7 @@ type CounterpartyDocumentData struct {
 
 // CreateCounterpartyDocument ...
 func (c *Client) CreateCounterpartyDocument(counterpartyDocumentData *CounterpartyDocumentData) (*CounterpartyDocument, error) {
-	if err := helper.CreateFakeFile(counterpartyDocumentData.Title, 1e3); err != nil {
+	if err := helper.CreateFakeFile(counterpartyDocumentData.Title, "pdf"); err != nil {
 		return nil, err
 	}
 	log.Println("File was created seccessfully")
